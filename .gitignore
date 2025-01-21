@@ -1,3 +1,35 @@
-/target
-/.mvn
+
 /.vscode
+
+# Ignore Maven target folder
+/target/
+
+# Ignore Maven wrapper files (if using the Maven wrapper)
+/.mvn/
+/mvnw
+/mvnw.cmd
+
+# Ignore IntelliJ IDEA specific files
+.idea/
+*.iml
+
+# Ignore Eclipse specific files
+.project
+.classpath
+.settings/
+
+# Ignore NetBeans specific files
+nbproject/
+
+# Ignore local build directories
+build/
+
+# Ignore logs, temp, and IDE-specific directories
+*.log
+*.swp
+*.bak
+.DS_Store
+
+# Ignore other system-specific files (macOS, Windows, etc.)
+Thumbs.db
+*.lock
