@@ -1,0 +1,13 @@
+spring:
+  redis:
+    host: localhost
+    port: 6380
+    password: ""
+    database: 0
+
+sa-token:
+  redis:
+    host: localhost
+    port: 6380
+    password: # Optional, leave empty if not needed
+    database: 0

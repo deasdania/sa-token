@@ -1,13 +1,19 @@
 package com.example;
 
-
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.exception.NotLoginException;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
+        // Initialize Spring context (to enable Redis + SaToken integration)
+        ApplicationContext context = new AnnotationConfigApplicationContext(SaTokenConfigure.class);
+
+        // Start the CLI interaction
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -15,7 +21,8 @@ public class App {
             System.out.println("1. Login");
             System.out.println("2. Logout");
             System.out.println("3. Validate Token");
-            System.out.println("4. Exit");
+            System.out.println("4. Get Login ID from Token");
+            System.out.println("5. Exit");
             System.out.print("Enter option: ");
 
             int choice = 0;
@@ -37,7 +44,12 @@ public class App {
                     validateToken(scanner); // Validate token
                     break;
                 case 4:
+                    loginIDFromToken(scanner); // Get Login ID from Token
+                    break;
+                case 5:
                     System.out.println("Exiting...");
+                    // Close Spring context before exiting
+                    ((ConfigurableApplicationContext) context).close();
                     return;
                 default:
                     System.out.println("Invalid choice. Please try again.");
@@ -66,7 +78,6 @@ public class App {
         }
 
         // Create a UserSession object using the parsed data
-        //  put the loginId as userId 
         UserSession userSession = new UserSession(loginId, userName);
 
         System.out.println("User Session created: " + userSession);
@@ -83,7 +94,7 @@ public class App {
             System.out.println("Error during login: " + e.getMessage());
         }
     }
-    
+
     // Simulate Logout
     private static void logout(Scanner scanner) {
         System.out.print("Enter Login ID to log out: ");
@@ -114,13 +125,39 @@ public class App {
         }
         
         try {
-            // Get the remaining validity time of the specified token (unit: seconds, return -1 means permanent validity, -2 means no such value)
             // Use StpUtil to check if the token is valid
             Object loginOb = StpUtil.getLoginIdByToken(token);
             if (loginOb == null) {
                 System.out.println("Token is invalid.");
             } else {
                 System.out.println("Token is valid.");
+            }
+        } catch (NotLoginException e) {
+            System.out.println("Invalid or expired token.");
+        } catch (Exception e) {
+            System.out.println("Error during token validation: " + e.getMessage());
+        }
+    }
+
+    // Get login ID from Token
+    private static void loginIDFromToken(Scanner scanner) {
+        System.out.print("Enter Token to Validate: ");
+        String token = scanner.nextLine();
+
+        if (token.isEmpty()) {
+            System.out.println("Token cannot be empty.");
+            return;
+        }
+        
+        try {
+            // Use StpUtil to check if the token is valid
+            Object loginOb = StpUtil.getLoginIdByToken(token);
+            if (loginOb == null) {
+                System.out.println("Token is invalid.");
+            } else {
+                Object userOb = StpUtil.getSessionByLoginId(loginOb);
+                System.out.println("User logged in with ID: " + loginOb);
+                System.out.println("User session: " + userOb);
             }
         } catch (NotLoginException e) {
             System.out.println("Invalid or expired token.");
