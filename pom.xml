@@ -20,7 +20,7 @@
     <properties>
         <java.version>1.8</java.version> <!-- Explicitly set Java version to 1.8 -->
         <spring-boot.version>2.7.4</spring-boot.version> <!-- Spring Boot version -->
-        <satoken.version>1.37.0</satoken.version> <!-- Align Sa-Token version here -->
+        <!-- <satoken.version>1.37.0</satoken.version> Align Sa-Token version here -->
         <lombok.version>1.18.26</lombok.version>
     </properties>
 
@@ -36,22 +36,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
-
-        <!-- Sa-Token Core Dependency (for session management) -->
-        <dependency>
-            <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-core</artifactId>
-            <version>1.37.0</version> <!-- Sa-Token core version -->
-        </dependency>
-
-        <!-- Sa-Token Redis Dependency (for Redis storage) -->
-        <dependency>
-            <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-redis</artifactId>
-            <version>1.37.0</version> <!-- Compatible Sa-Token Redis version -->
-        </dependency>
-
-        <!-- Sa-Token Redis DAO (for Redis with Jackson serialization) -->
+        
         <dependency>
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-dao-redis-jackson</artifactId>
@@ -63,7 +48,7 @@
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
-            <version>4.2.3</version>
+            <version>3.6.3</version>
         </dependency>
 
         <!-- Spring Boot Starter Test (for testing) -->
@@ -74,12 +59,32 @@
         </dependency>
 
         <!-- JUnit Jupiter for testing -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.7.1</version>
-            <scope>test</scope>
-        </dependency>
+        
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.7.1</version>
+        <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-params</artifactId>
+        <version>5.7.1</version>
+        <scope>test</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok-maven-plugin -->
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok-maven-plugin</artifactId>
+    <version>1.18.16.0</version>
+    <scope>provided</scope>
+</dependency>
+
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+</dependency>
 
     </dependencies>
 
