@@ -26,12 +26,12 @@ public class ProductDao {
     }
 
     // Find a product by its ID
-    public Product findProductById(int id) {
+    public Product findProductById(String id) {
         return (Product) template.opsForHash().get(HASH_KEY, id);
     }
 
     // Delete a product by its ID
-    public String deleteProduct(int id) {
+    public String deleteProduct(String id) {
         template.opsForHash().delete(HASH_KEY, id);
         return "Product removed";
     }
