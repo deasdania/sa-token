@@ -2,52 +2,61 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.ResponseDTO;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.dev33.satoken.exception.NotLoginException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.Claims;
+
+import java.util.Date;
+
+import javax.crypto.SecretKey;
+
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    // Login endpoint
+    private final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256); // Use a secure key for production
+
+    // Login endpoint (generating JWT)
     @PostMapping("/login")
     public ResponseDTO login(@RequestParam("loginId") long loginId,
                              @RequestParam("username") String username) {
-        // Simulating login
         try {
+            // Create login session with Sa-Token
             StpUtil.createLoginSession(loginId);
-            String token = StpUtil.getTokenValueByLoginId(loginId);
+
+            // Generate JWT token
+            String token = generateJwtToken(loginId);
+
             return new ResponseDTO("User logged in with ID: " + loginId, token);
         } catch (Exception e) {
             return new ResponseDTO("Error during login: " + e.getMessage());
         }
     }
 
-    // Logout endpoint
-    @PostMapping("/logout")
-    public ResponseDTO logout(@RequestParam("loginId") long loginId) {
-        try {
-            StpUtil.logout(loginId);
-            return new ResponseDTO("Logout successful for login ID: " + loginId);
-        } catch (Exception e) {
-            return new ResponseDTO("Error during logout: " + e.getMessage());
-        }
+    // JWT generation logic
+    private String generateJwtToken(long loginId) {
+        return Jwts.builder()
+                .setSubject(String.valueOf(loginId))
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1 hour expiration
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
     }
 
     // Validate Token endpoint
     @PostMapping("/validate")
     public ResponseDTO validateToken(@RequestParam("token") String token) {
         try {
-            Object loginOb = StpUtil.getLoginIdByToken(token);
-            if (loginOb == null) {
-                return new ResponseDTO("Token is invalid.");
-            } else {
-                return new ResponseDTO("Token is valid.");
-            }
-        } catch (NotLoginException e) {
-            return new ResponseDTO("Invalid or expired token.");
+            Claims claims = Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(token)
+                    .getBody();
+            return new ResponseDTO("Token is valid for login ID: " + claims.getSubject());
         } catch (Exception e) {
-            return new ResponseDTO("Error during token validation: " + e.getMessage());
+            return new ResponseDTO("Invalid or expired token.");
         }
     }
 }

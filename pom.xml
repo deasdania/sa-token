@@ -52,6 +52,50 @@
 			<version>${satoken.version}</version>
 		</dependency>
 
+        <!-- Sa-Token Dependency -->
+        <!-- https://mvnrepository.com/artifact/cn.dev33/sa-token -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+
+
+        <!-- jjwt-api Dependency -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version> <!-- Update to the latest version -->
+        </dependency>
+
+        <!-- JJWT Impl Dependency (needed for actual implementation) -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+        <!-- JJWT Jackson Dependency (needed for JSON processing) -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+		<!-- JUnit 5 Dependency -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.7.0</version> <!-- Update to the latest version -->
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.7.0</version> <!-- Update to the latest version -->
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>
@@ -111,6 +155,10 @@
 		</plugins>
 	</build>
 	<repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
 		<repository>
 			<id>public</id>
 			<name>huawei nexus</name>
