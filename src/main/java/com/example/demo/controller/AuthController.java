@@ -1,62 +1,60 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.ResponseDTO;
-import cn.dev33.satoken.stp.StpUtil;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.Claims;
-
-import java.util.Date;
-
-import javax.crypto.SecretKey;
-
+import com.example.demo.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256); // Use a secure key for production
+    private final JwtUtil jwtUtil;
+    private final RedisTemplate<String, String> redisTemplate;
 
-    // Login endpoint (generating JWT)
+    @Autowired
+    public AuthController(JwtUtil jwtUtil, RedisTemplate<String, String> redisTemplate) {
+        this.jwtUtil = jwtUtil;
+        this.redisTemplate = redisTemplate;
+    }
+
+    // Login endpoint
     @PostMapping("/login")
     public ResponseDTO login(@RequestParam("loginId") long loginId,
                              @RequestParam("username") String username) {
         try {
-            // Create login session with Sa-Token
-            StpUtil.createLoginSession(loginId);
-
-            // Generate JWT token
-            String token = generateJwtToken(loginId);
-
+            String token = jwtUtil.createToken(loginId);
             return new ResponseDTO("User logged in with ID: " + loginId, token);
         } catch (Exception e) {
             return new ResponseDTO("Error during login: " + e.getMessage());
         }
     }
 
-    // JWT generation logic
-    private String generateJwtToken(long loginId) {
-        return Jwts.builder()
-                .setSubject(String.valueOf(loginId))
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1 hour expiration
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                .compact();
+    // Logout endpoint
+    @PostMapping("/logout")
+    public ResponseDTO logout(@RequestParam("loginId") long loginId) {
+        try {
+            // Remove the token from Redis on logout
+            redisTemplate.delete("token:" + loginId);
+            return new ResponseDTO("Logout successful for login ID: " + loginId);
+        } catch (Exception e) {
+            return new ResponseDTO("Error during logout: " + e.getMessage());
+        }
     }
 
     // Validate Token endpoint
     @PostMapping("/validate")
     public ResponseDTO validateToken(@RequestParam("token") String token) {
         try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(SECRET_KEY)
-                    .parseClaimsJws(token)
-                    .getBody();
-            return new ResponseDTO("Token is valid for login ID: " + claims.getSubject());
+            boolean isValid = jwtUtil.validateToken(token);
+            if (isValid) {
+                return new ResponseDTO("Token is valid.");
+            } else {
+                return new ResponseDTO("Token is invalid.");
+            }
         } catch (Exception e) {
-            return new ResponseDTO("Invalid or expired token.");
+            return new ResponseDTO("Error during token validation: " + e.getMessage());
         }
     }
 }

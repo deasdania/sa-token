@@ -1,3 +1,12 @@
+Use redis configuration
+Free to edit all on application.yml but the secret-key need to be at least generated with a secure 256-bit key for HS256
+e.g
+```java
+    private final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+```
+
+
 ```bash
 mvn clean install -Djava.version=1.8
 ```
+
