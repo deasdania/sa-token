@@ -1,0 +1,48 @@
+// +gunk java.Package("com.example.gunk.v1.auth")
+// +gunk java.MultipleFiles(true)
+package auth
+
+import (
+	"github.com/gunk/opt/file/java"
+)
+
+type StatusResponse struct {
+	Success      bool   `pb:"1" json:"success"`
+	Code         string `pb:"2" json:"code"`
+	Message      string `pb:"3" json:"message"`
+	ErrorCode    string `pb:"4" json:"error_code"`
+	ErrorMessage string `pb:"5" json:"error_message"`
+}
+
+type LoginRequest struct {
+	Username string `pb:"1" json:"username"`
+	LoginID  string `pb:"2" json:"login_id"`
+}
+
+type LoginResponse struct {
+	StatusResponse StatusResponse `pb:"1" json:"status_response"`
+	Token          string         `pb:"2" json:"token"`
+}
+
+type LogoutRequest struct {
+	Token string `pb:"1" json:"token"`
+}
+
+type LogoutResponse struct {
+	StatusResponse StatusResponse `pb:"1" json:"status_response"`
+}
+
+type ValidateTokenRequest struct {
+	Token string `pb:"1" json:"token"`
+}
+
+type ValidateTokenResponse struct {
+	StatusResponse StatusResponse `pb:"1" json:"status_response"`
+	Data           LoginRequest   `pb:"2" json:"data"`
+}
+
+type AuthService interface {
+	Login(LoginRequest) LoginResponse
+	Logout(LogoutRequest) LogoutResponse
+	ValidateToken(ValidateTokenRequest) ValidateTokenResponse
+}

@@ -1,12 +1,79 @@
-Use redis configuration
-Free to edit all on application.yml but the secret-key need to be at least generated with a secure 256-bit key for HS256
-e.g
+
+# Project Setup and Build Instructions
+
+This document outlines the steps required to set up and build the project.
+
+## Configuration
+
+Redis configuration is managed within the `application.yml` file.  All settings within this file are freely editable, with one crucial exception: the `secret-key`.
+
+**Important Security Note:** The `secret-key` *must* be a securely generated 256-bit key for HS256.  Do *not* use a weak or easily guessable key.  An example of generating a suitable key in Java is:
+
 ```java
-    private final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+private final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 ```
 
+## Dependencies
+
+### Gunk
+
+[Gunk](https://github.com/gunk/gunk) is used for generating protobuf files. Install it using the following command:
+
+```bash
+go install github.com/gunk/gunk@v0.11.0
+```
+
+After installation, verify the Gunk version:
+
+```bash
+gunk version
+```
+
+(A typical output might be `gunk v0.12.1` or later.)
+
+### gRPC Java Destination Path
+
+Set the `GRPC_JAVA_DEST_ROOT_PATH` environment variable to specify the directory where generated gRPC Java code will be placed.  For the current directory, use:
+
+```bash
+export GRPC_JAVA_DEST_ROOT_PATH='./'
+```
+
+## Build Process
+
+The project uses Maven for building.  The following commands can be used:
+
+### Full Build (including protobuf compilation)
+
+This command cleans any previous builds, compiles the protobuf definitions, and compiles the project:
 
 ```bash
 mvn clean install -Djava.version=1.8
 ```
 
+Note: `-Djava.version=1.8` specifies the Java version. Adjust as needed for your environment.
+
+### Clean Build
+
+Removes previous build artifacts:
+
+```bash
+mvn clean
+```
+
+### Manual Protobuf Compilation
+
+If you need to compile the protobuf definitions separately:
+
+```bash
+mvn protobuf:compile
+```
+
+### Compile Project (without cleaning or protobuf compilation)
+
+Compiles the project code:
+
+```bash
+mvn compile
+```
+```

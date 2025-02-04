@@ -11,3 +11,7 @@ spring:
         min-idle: 1     # Min idle connections to Redis
 jwt:
   secret-key: "jQS85QR7qrY5ROtdvR8CFEAOBKDTBZl2+TyHxc919UI="
+
+grpc:
+  server:
+    port: 9090

@@ -14,25 +14,39 @@
 		<!-- <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
 		<!-- <maven.compiler.source>1.8</maven.compiler.source><maven.compiler.target>1.8</maven.compiler.target> -->
 		<java.version>1.8</java.version>
-		<spring-boot.version>2.7.18</spring-boot.version>
+		<spring-boot.version>2.7.6</spring-boot.version>
 		<spring-cloud.version>2021.0.8</spring-cloud.version>
 		<spring-boot-admin.version>2.7.10</spring-boot-admin.version>
 		<satoken.version>1.37.0</satoken.version>
 		<lombok.version>1.18.26</lombok.version>
+		<lognet.grpc.version>4.7.1</lognet.grpc.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencyManagement>
-		<dependencies></dependencies>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.google.protobuf</groupId>
+				<artifactId>protobuf-java</artifactId>
+				<version>3.17.2</version> <!-- Force version 3.17.2 -->
+			</dependency>
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-core</artifactId>
+				<version>1.47.0</version>
+			</dependency>
+		</dependencies>
 	</dependencyManagement>
 	<!-- <packaging>pom</packaging> -->
 	<dependencies>
 		<!-- SpringCloud 微服务 -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-dependencies</artifactId>
-			<version>${spring-cloud.version}</version>
-			<type>pom</type>
-			<scope>import</scope>
-		</dependency>
+		
 		<!-- SpringBoot 依赖配置 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -96,13 +110,61 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- Spring Boot Redis Starter -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 			<version>2.7.6</version>
+		</dependency> -->
+
+		<!-- gRPC dependencies -->
+		<!-- <dependency>
+			<groupId>io.github.lognet</groupId>
+			<artifactId>grpc-spring-boot-starter</artifactId>
+			<version>${lognet.grpc.version}</version>
+		</dependency> -->
+		<dependency>
+			<groupId>net.devh</groupId>
+			<artifactId>grpc-server-spring-boot-starter</artifactId>
+			<version>2.12.0.RELEASE</version>
+			<exclusions>
+				<exclusion>
+					<groupId>io.grpc</groupId>
+					<artifactId>grpc-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- Protobuf plugin -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<version>2.4.6</version>
+		</dependency>
+		<!-- gRPC Reflection -->
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-netty</artifactId>
+			<version>1.47.0</version> <!-- Use the appropriate version for your project -->
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.grpc/grpc-services -->
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-services</artifactId>
+			<version>1.47.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-protobuf</artifactId>
+			<version>1.42.0</version>
 		</dependency>
 	</dependencies>
 	<build>
+		<extensions>
+			<extension>
+				<groupId>kr.motd.maven</groupId>
+				<artifactId>os-maven-plugin</artifactId>
+				<version>1.6.2</version>
+			</extension>
+		</extensions>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -157,8 +219,30 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.xolstice.maven.plugins</groupId>
+				<artifactId>protobuf-maven-plugin</artifactId>
+				<version>0.6.1</version>
+				<configuration>
+					<protocArtifact>com.google.protobuf:protoc:3.17.2:exe:${os.detected.classifier}</protocArtifact>
+					<pluginId>grpc-java</pluginId>
+					<pluginArtifact>io.grpc:protoc-gen-grpc-java:1.39.0:exe:${os.detected.classifier}</pluginArtifact>
+					<protoSourceRoot>src/main/proto</protoSourceRoot> <!-- Path to your proto files -->
+					<outputDirectory>target/generated-sources/protobuf/java</outputDirectory> <!-- Where to output generated files -->
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>compile-custom</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
+	
+
 	<repositories>
         <repository>
             <id>central</id>
