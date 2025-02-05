@@ -2,7 +2,7 @@ Use redis configuration
 Free to edit all on application.yml but the secret-key need to be at least generated with a secure 256-bit key for HS256
 e.g
 ```java
-    private final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+private final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 ```
 
 
@@ -10,3 +10,17 @@ e.g
 mvn clean install -Djava.version=1.8
 ```
 
+build with 
+```bash 
+mvn clean install
+```
+
+run with 
+```bash 
+mvn spring-boot:run
+```
+
+hit login with grpcurl
+```bash
+grpcurl --plaintext -d '{"login_id": 12, "username":"dea"}' localhost:9090 helper.AuthHelperService.Login
+```
