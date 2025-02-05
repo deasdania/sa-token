@@ -21,7 +21,13 @@
 		<lombok.version>1.18.26</lombok.version>
 	</properties>
 	<dependencyManagement>
-		<dependencies></dependencies>
+		<dependencies>
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-core</artifactId>
+				<version>1.44.1</version> <!-- Or whichever version you want to enforce -->
+			</dependency>
+		</dependencies>
 	</dependencyManagement>
 	<!-- <packaging>pom</packaging> -->
 	<dependencies>
@@ -101,6 +107,47 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 			<version>2.7.6</version>
 		</dependency>
+
+		<!-- gRPC and Protobuf dependencies -->
+		<!-- grpc-core version 1.44.1 -->
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-core</artifactId>
+			<version>1.44.1</version>
+		</dependency>
+		
+		<!-- grpc-netty version 1.44.1 -->
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-netty</artifactId>
+			<version>1.44.1</version>
+		</dependency>
+
+		<!-- grpc-server-spring-boot-starter version 2.12.0.RELEASE -->
+		<dependency>
+			<groupId>net.devh</groupId>
+			<artifactId>grpc-server-spring-boot-starter</artifactId>
+			<version>2.12.0.RELEASE</version>
+			<exclusions>
+				<!-- Exclude grpc-core dependency pulled by grpc-server-spring-boot-starter -->
+				<exclusion>
+					<groupId>io.grpc</groupId>
+					<artifactId>grpc-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-stub</artifactId>
+			<version>1.44.1</version>
+		</dependency>
+		<!-- Protobuf Compiler Plugin -->
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>3.17.3</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -123,11 +170,11 @@
 							<artifactId>lombok</artifactId>
 							<version>${lombok.version}</version>
 						</path>
-						<path>
+						<!-- <path>
 							<groupId>org.springframework.boot</groupId>
 							<artifactId>spring-boot-configuration-processor</artifactId>
 							<version>${spring-boot.version}</version>
-						</path>
+						</path> -->
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
