@@ -1,0 +1,18 @@
+[protoc]
+
+[generate go]
+json_tag_postproc=true
+plugin_version=v1.34.2
+
+[generate grpc-go]
+plugin_version=v1.5.1
+
+[generate grpc-gateway]
+plugin_version=v2.24.0
+
+[generate java]
+out=./src/main/java/
+
+[generate grpc-java]
+plugin_version=v1.68.0
+out=./src/main/java/

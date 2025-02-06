@@ -1,6 +1,8 @@
 
 /.vscode
 
+/gunk/src
+
 # Ignore Maven target folder
 /target/
 
