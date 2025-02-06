@@ -2,6 +2,10 @@
 server:
     port: 8080
 
+sa:
+    route:
+        prefix: "/api"
+
 # sa-token 配置
 sa-token: 
     # token 名称 (同时也是 cookie 名称)
